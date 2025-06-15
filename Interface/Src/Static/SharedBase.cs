@@ -48,8 +48,7 @@ public abstract class SharedBase : IDisposable
 
             this.SharedObject = Object;
             this.View.Write(this.HeaderOffset, ref Object);
-        }
-        else
+        } else
         {
             this.File = MemoryMappedFile.OpenExisting(this.Name);
 
@@ -77,7 +76,7 @@ public abstract class SharedBase : IDisposable
                     byte[] Buffer = new byte[Length];
 
                     if (Options.AutoClear)
-                        View.Write(this.BufferOffset, 0);
+                        this.View.Write(this.BufferOffset, 0);
 
                     this.View.ReadArray(this.BufferOffset + 4, Buffer, 0, Length);
                     OnMessageReceived?.Invoke(Buffer, this);
@@ -94,7 +93,7 @@ public abstract class SharedBase : IDisposable
 
     public void Write(byte[] Data)
     {
-        if (Data.Length > Options.Size)
+        if (Data.Length > this.Options.Size)
             throw new Exception("Buffer Size Exceeds Shared Memory Size Limitations.");
 
         this.View.Write(this.BufferOffset, Data.Length);
